@@ -1,23 +1,31 @@
 const messages = document.getElementById("messages");
 const messagesHistory = document.getElementById("messagesHistory");
 const tableUsers = document.getElementById("tableUsers");
+const tableTest= document.getElementById("tableTest");
 
-function forms(message,userId)
+function forms(message)
 {
   //зашел/вышел пользователь
-      if(message.online && cellsUsers[message.cell].children[0])
-      {     
-        cellsUsers[message.cell].children[0].src ='./img/'+(message.online =='Yes'? 'green':'red')+'.png' ;
+      if(message.online && message.cell)
+      { 
+        if(message.online =='Yes' &&  message.user.id != user.id)
+        {      
+              
+          createRowUsers(message.user.id,message.user.login, message.user.fio,true,null);
+        }  
+        else
+        {
+          if( cellsUsers[message.cell].children[0])
+          cellsUsers[message.cell].children[0].src ='./img/red.png' ;
+        }  
             return;
         }
  //получение сообщений
         if( message.userFrom)
       {   
-        // if((message.userTo!= 0 && (userId != message.userTo && userId != message.userFrom.id )))
-        // if((message.userTo!= 0 && message.idChat ==0 && (userId != message.userTo && userId != message.userFrom.id )))
-        // {return;}
+
           const li = document.createElement("li");
-          if ( userId == message.userFrom.id) li.className = 'right';
+          if ( user.id == message.userFrom.id) li.className = 'right';
           li.innerHTML = message.value;
           messages.appendChild(li);
           messagesHistory.appendChild(li.cloneNode(true));
@@ -26,29 +34,45 @@ function forms(message,userId)
 }
 //список пользователей
 let usersOnline;
-function users(message, userId, change)
-{          usersOnline = message; 
+function users(usersOnline, user,change)
+{         
+ //  usersOnline = message; 
   //usersOnline = change.usersOnline; 
- // start()
-
-          let online = false;
-          message.forEach(message => {
-        if(usersOnline.findIndex(x => x.GUID==message.GUID) !=-1) {online = true;} else  {online = false;} 
-            createRowUsers(message.GUID,message.login, message.fio,online);
+start()
+const trUsers = document.createElement("tbody"); 
+tableUsers.appendChild(trUsers);
+         // let online = false;
+         usersOnline.forEach(usersOnline => {
+        // if(usersOnline.findIndex(x => x.GUID==message.GUID) !=-1) {online = true;} else  {online = false;} 
+            createRowUsers(usersOnline.GUID,usersOnline.login, usersOnline.fio,true,trUsers);
           })
 
-finish(change.idChat,userId);
+finish(user);
 
  }
+ //const lettersUsers = ["id","v","","ФИО"];
+function start()
+{
+  let table = document.getElementById("tableUsers");
+  table.innerHTML = '';
+  //таблица пользователей
+
+const trUsers = document.createElement("thead");
+
+trUsers.innerHTML = lettersUsers.map(col => (`${col}` == "v"?'<td><INPUT type="checkbox"  onchange="checkAll()" name="chk[]" style="width:15px;height:15px;"/></td>':`<td  `+(`${col}` == "id"?'style="visibility:hidden;"':'')  +`>${col}</td>`) ).join("");
+tableUsers.appendChild(trUsers);
+makeSortable(tableUsers);
+}
  let id='0';
- function finish(idChat,userId)
+ function finish(user)
 {
   getSelectedRow();
   //пользователь зашел, отметить зеленым цветом
   ws.send(JSON.stringify({
     online: 'Yes',
-    cell: '' + userId,
-    value: cellsUsers['' + userId].value
+    cell: '' + user.id,
+    value: cellsUsers['' + user.id].value,
+    user: user
   }));
  // id = (-idChat).toString();
   if (document.getElementsByName(id.toString())[0])
@@ -79,10 +103,13 @@ function getSelectedRow() {
 }
  
 
-const lettersUsers = ["id","v","","ФИО"];
-const createRowUsers = (id,login, FIO,online) => {
-  const trUsers = document.createElement("tr");
-  trUsers.innerHTML =
+//const lettersUsers = ["id","v","","ФИО"];
+const lettersUsers = ["id","","ФИО"];
+const createRowUsers = (id,login, FIO,online, trUsers) => {
+  //const trUsers = document.createElement("tbody"); 
+  trUsers = trUsers || tableUsers.getElementsByTagName('tBody')[0];
+  const tr = document.createElement("tr"); 
+  tr.innerHTML =
   lettersUsers
       .map(col => `<td><output `  +(`${col}` == "id"?'class="id"':'')  +` id="${col}${id}" type="text"></td>`)
     .join("");
@@ -90,7 +117,8 @@ const createRowUsers = (id,login, FIO,online) => {
   //   lettersUsers
   //       .map(col => `<td><output ` +(((`${id}`).split(' ')[0])<0?'onchange="checkChat()"':'') +(`${col}` == "id"?'class="id"':'')  +` id="${col}${id}" type="text"></td>`)
   //     .join("");
-  tableUsers.appendChild(trUsers);
+  //tableUsers.appendChild(trUsers);
+  trUsers.appendChild(tr);
   lettersUsers.forEach(col => {
     const cell = col + id;
     const input = document.getElementById(cell);
@@ -138,3 +166,39 @@ function insImg(input, name){
     input.children[0].src ='./img/'+name+'.png' ;
 
   };
+
+  function sortTable(table, col, reverse) {
+    var tb = table.tBodies[0], // use `<tbody>` to ignore `<thead>` and `<tfoot>` rows
+        tr = Array.prototype.slice.call(tb.rows, 0), // put rows into array
+        i;
+    reverse = -((+reverse) || -1);
+    tr = tr.sort(function (a, b) { // sort rows
+        return reverse // `-1 *` if want opposite order
+            * (a.cells[col].textContent.trim() // using `.textContent.trim()` for test
+                .localeCompare(b.cells[col].textContent.trim())
+               );
+    });
+    for(i = 0; i < tr.length; ++i) tb.appendChild(tr[i]); // append each row in order
+  }
+  
+  function makeSortable(table) {
+    console.log("l");
+    let th = table.tHead, i;
+    th && (th = th.rows[0]) && (th = th.cells);
+    if (th) i = th.length;
+    else return; // if no `<thead>` then do nothing
+    while (--i >= 0) (function (i) {
+        var dir = 1;
+        th[i].addEventListener('click', function () {sortTable(table, i, (dir = 1 - dir))});
+    }(i));
+  }
+  
+  function makeAllSortable(parent) {
+    parent = parent || document.body;
+    var t = parent.getElementsByTagName('table'), i = t.length;
+    while (--i >= 0) makeSortable(t[i]);
+  }
+  
+  // window.onload = function () {
+  //   makeAllSortable( null);
+  // };

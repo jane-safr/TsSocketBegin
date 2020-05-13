@@ -4,7 +4,7 @@ const welcome = document.getElementById("welcome");
 const form = document.getElementById("form");
 const input = document.getElementById("input");
 
-let user = {fio:'',id:''};
+let user = {fio:'',id:'',login:''};
 const HOST =  window.location.host +window.location.pathname; //'localhost:' +  8125;
 let cellsUsers =[];
 let checkboxes =[];
@@ -36,6 +36,7 @@ function printMessage(value) {
       //user = new user();
       user.fio= change.user.fio;
       user.id= change.user.GUID;
+      user.login= change.user.login;
       welcome.innerHTML =  user.fio;
       logout.innerHTML =   ' Выйти';
 
@@ -63,7 +64,7 @@ function printMessage(value) {
 
 
 
-commands[change.cell](change.message,user.id,change);
+commands[change.cell](change.message,user,change);
 }
 //вышел пользователь
 window.addEventListener('beforeunload', function() {
@@ -71,5 +72,6 @@ window.addEventListener('beforeunload', function() {
   ws.send(JSON.stringify({
     online: 'No',
     cell: '' + user.id,
+    user: user
   }));
 });
