@@ -15,18 +15,8 @@ let sC=
   {
   // console.log('Я тут!',user,Session,mode);
   let all; let SessionId = Session?Session.id:null
-  // if(mode =="DB")
-  // {
-  //   serverDB.login(user,SessionId,mode,function(err, _all) {
-  //     all = _all;
-  //     send(err,all);
-  //     });
-  // }
-  // else
-  // if(mode =="AD")
   {
-  
-    //let AD = require("./AD");
+
     if(Session)
     {
       AD.login( user,Session,function(err,_all)
@@ -37,14 +27,7 @@ let sC=
     }
       )
     }
-    // else
-    // {
-    //   serverDB.login(user,null,'AD',function(err, _all) {
-    //     console.log('_all',_all);
-    //     // all = _all;
-    //     // send(err,all);
-    //     });
-    // }
+
   }
   let wsSend;
   function send(err,all)

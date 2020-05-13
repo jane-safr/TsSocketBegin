@@ -4,12 +4,15 @@ const { parse } = require('querystring');
 
 // let app={
   let app={  
-  dispatch: function(path,extname) {
+  dispatch: function(path,extname,user) {
     //console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
     let site='';
        if (path == '/'|| path == '/?' ||  path == '/Messager/server.js'  ||  path == '/Messager/server.js/' )
     {
-      site = './index.html';
+      if(user)
+        site = './index.html';
+      else
+        site =  './views/login.ejs';
     }
     else
     if (extname == '')

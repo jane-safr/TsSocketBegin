@@ -58,6 +58,12 @@ const handleGreetRequest = (request, response) => {
 
     let filePath = '.' + request.url;
     let extname = String(path.extname(request.url)).toLowerCase();
+//определение пользователя    
+    if( request.session && request.session.data.user)
+      {_user = JSON.parse(request.session.data.user);}
+    else
+      {_user =null;}
+
 
  //выход
  //includes
@@ -67,31 +73,24 @@ const handleGreetRequest = (request, response) => {
       request.logout();
     if(_user)
         {  serverClass.login(function(err,user){
-                if (err) {
+                if (Date(),'err serverClass.login',err) {
                   console.log(err);
                   return;
                 }
                 console.log('logout',_user);
               },_user,null,mode)}
               mySession = null; 
-    console.log('logout', request.session.data.user,_user);
    }
-   console.log('filePath before dispatch ',filePath,request.url);
 
-  filePath = app.dispatch(request.url,extname);
+  filePath = app.dispatch(request.url,extname,_user);
   console.log(Date(),'filePath',filePath,request.url);   
   
-  if( request.session && request.session.data.user)
-    {
-      _user = JSON.parse(request.session.data.user);
-    }
-
     extname = String(path.extname(filePath)).toLowerCase();
     let contentType = app.mimeTypes[extname] || 'text/html; charset=utf-8';
 
     //POST login
     if (request.method === 'POST') {
-      console.log('POST',request.url)
+     // console.log('POST',request.url)
      if(request.url.match("/login") )
         { 
 
@@ -102,26 +101,16 @@ const handleGreetRequest = (request, response) => {
                   console.log(err);
                   return;
                 }
-                console.log('POST2',err,user)
+                //console.log('POST2',err,user)
                 if (!user) {
                   let content = ejs.render(fs.readFileSync(filePath, 'utf8'), {filename: 'login',  user: undefined, message: "Укажите правильный " + (mode=="AD"?"логин":"email") + " или пароль!", SelForm: 'formlogin', notUser: undefined,mode: mode});
                   app.Render(response,content,contentType);
-
                   return;
                 }
                 else
                 _user = JSON.parse(user);
                  request.logIn(_user);
-                
-                console.log('login', mySession.data.user, mySession.id);
-
-              //  {
-                // if(usersOnline.) 
-                //   if(usersOnline.findIndex(x => x && x.GUID==_user.GUID) ===-1)
-                // {
-                //   usersOnline.push(_user);
-                // }
-                
+                 
                 let find= false;
                 usersOnline.forEach(function (x) {
                   if (x.GUID==_user.GUID)
@@ -140,7 +129,6 @@ const handleGreetRequest = (request, response) => {
   }
   else
  { 
-  //console.log('nen',filePath);
    fs.readFile(filePath, function(error, content) {
    // console.log('nen222');
       if (error) {

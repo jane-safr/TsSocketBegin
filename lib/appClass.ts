@@ -92,8 +92,8 @@ function getSelectedRow() {
         table.rows[index].classList.toggle("selected");
       }
 
-      index = table.rows[index].rowIndex;
-      table.rows[index].classList.toggle("selected");
+      index = (<HTMLTableRowElement>this).rowIndex;
+      (<HTMLTableRowElement>this).classList.toggle("selected");
       id =  table.rows[index].cells[0].textContent;
      // Chat=table.rows[index].cells[3].textContent;
 

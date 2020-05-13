@@ -99,7 +99,8 @@ label {
   font-size: 1.5em;
 }
 
-.selected{background-color: rgb(19, 153, 19); color: rgb(252, 252, 252);font-weight: bold}
+/* .selected{background-color: rgb(170, 219, 170); color: rgb(252, 252, 252);font-weight: bold} */
+.selected{background-color: rgb(188, 219, 188);font-weight: bold}
 .id{display: none;}
 .right{ text-align: right;color: rgb(150, 114, 73)}
 
