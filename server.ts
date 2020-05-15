@@ -67,7 +67,8 @@ const handleGreetRequest = (request, response) => {
 
  //выход
  //includes
- if(filePath.match('logout')) 
+ //  if(request.url === '/logout')
+if(filePath.match('logout')) 
  { 
      console.log('logout');
       request.logout();
@@ -114,7 +115,7 @@ const handleGreetRequest = (request, response) => {
                 let find= false;
                 usersOnline.forEach(function (x) {
                   if (x.GUID==_user.GUID)
-                  find= true;
+                {find= true;return;}
               });
 
               
@@ -258,6 +259,25 @@ if (ws.user)
     //           // console.log('ws.send2',wsSend)
     //      }
     //    },null,_idChat?_idChat:0, (ws.user?ws.user.id:0),mode);
+   //закрытие сокета
+   ///console.log("закрытие сокета!!!!!!!!");
+ws.on("close", function() {
+  console.log("закрытие сокета!!!!!!!!!");
+  if(ws.user)
+  {
+    try
+    {
+      commands['usersOnline'](function( _usersOnline){usersOnline =_usersOnline;},usersOnline,server.clients)
+      console.log('пользователи онлайн splice',usersOnline);
+    request.logout();
+    mySession = null; 
+    ws.user = null;
+    _user = null;
+    }
+    catch
+    {}
+  }
+});
 
 ws.on ("error", (error) => {
   if (error.code != "ECONNRESET") {
@@ -269,7 +289,7 @@ ws.on ("error", (error) => {
 });
 
 })
-
+serverHttp.timeout = 0;
 serverHttp.listen(porthttp, function() {
   console.log(`Listening on http://${HOST}:${porthttp}`);
 });

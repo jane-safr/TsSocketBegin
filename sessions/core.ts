@@ -34,9 +34,18 @@ let session = function( request, response, callback ){
    session.data.history.push(request.url);
 
 // как правило, мы установим для всех неопознанных пользователей значение «Гость»
-  //  if(typeof session.data.user == 'undefined' || session.data.user == ""){
-  //   session.data.user = "Guest";
-  // }
+   if(typeof session.data.user == 'undefined' || session.data.user == ""){
+    let user =
+    {
+      id:-3,
+      GUID:    "",
+      email:  "",
+      login:  "Guest",
+      fio:   "Guest",
+      password: ""
+      };
+    session.data.user = JSON.stringify(user);
+  }
 // устанавливаем заголовок ответа, чтобы установить cookie для текущего сеанса
    // это сделано для того, чтобы клиент мог передавать информацию cookie для последующих запросов
   response.setHeader('Set-Cookie', session.getSetCookieHeaderValue());
@@ -71,8 +80,12 @@ let session = function( request, response, callback ){
            };
         request.logout = function()    {
           console.log("Пользователь удален из сессии",request.session.data.user,request.session.id);
-         request.session.data.user = null;
+        request.session.data.user = null;
          //request.session = null;
+      //   request.session.data.user = "Guest";
+       //  response.writeHead(200, {'Content-Type': 'text/plain'});
+        //  response.write('Guest Пользователь вышел из сессии');
+        //  response.end();
         }
 
         session(request, response, function(request, response){

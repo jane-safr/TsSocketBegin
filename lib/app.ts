@@ -12,7 +12,8 @@ var ws = new WebSocket("ws://" + HOST);
 
 ws.onopen = () => setStatus("В сети");
 
-ws.onclose = () => {setStatus("Отключен");  cellsUsers['' + user.id].children[0].src ='' ; }
+ws.onclose = () => {setStatus("Отключен");  cellsUsers['' + user.id].children[0].src ='';
+welcome.innerHTML =  ''; user = null; }
 
 ws.onmessage = response => 
 printMessage(response.data);

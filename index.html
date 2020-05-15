@@ -7,14 +7,39 @@
   <link rel="stylesheet" href="/views/index.css" />
 </head>
 <body>
-  <span class="list"><a class="header-button" href= window.location.host + window.location.pathname +"/login" id = "welcome"></a></span><br>
-  <span class="list"><a class="header-button" href= window.location.host + window.location.pathname +"/login" id = "logout">Войти</a></span>
+  <div id="mySidenav" class="sidenav">
+    <!-- <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a> -->
+      <span class="list"><a class="header-button" href= window.location.host + window.location.pathname +"/login" id = "welcome"></a></span>
+      <span class="list"><a class="header-button" href= window.location.host + window.location.pathname +"/login" id = "logout">Войти</a></span>
+      <span><a1 class="header-button2" id="status">Не в сети</a1></span>
 
-  <header>
-    <!-- <h1> <p class = "vid"> Мой Чат </p></h1>  -->
-    <span id="status">Не в сети</span>
-  </header>
-  <table id="tableUsers"></table>
+      <header>
+        <!-- <h1> <p class = "vid"> Мой Чат </p></h1>  -->
+        <!-- <span id="status">Не в сети</span> -->
+      </header>
+      <table id="tableUsers" ><a class="header-button2"></a></table>
+ </div>
+ <div id="main">
+  <!-- <h2>Sidenav Push Example</h2>
+  <p>Click on the element below to open the side navigation menu, and push this content to the right. Notice that we add a black see-through background-color to body when the sidenav is opened.</p> -->
+  <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;</span>
+</div>
+<script>
+  function openNav() {
+    let w =document.getElementById("mySidenav").style.width;
+    if (w == "250px"){w = "0";} else {w = "250px";}
+    document.getElementById("mySidenav").style.width = w;
+    document.getElementById("main").style.marginLeft = w;
+    // document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
+  }
+  
+  // function closeNav() {
+  //   document.getElementById("mySidenav").style.width = "0";
+  //   document.getElementById("main").style.marginLeft= "0";
+  //   // document.body.style.backgroundColor = "white";
+  // }
+  </script>
+
   <script src="./built/lib/appClass.js"></script> 
   <script src="./built/lib/app.js"></script> 
 </body>
